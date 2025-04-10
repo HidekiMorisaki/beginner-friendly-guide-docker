@@ -1,0 +1,43 @@
+services:
+  redmine:
+    image: redmine:5.1
+    container_name: redmine_app
+    restart: always
+    ports:
+      - "8080:3000"
+    environment:
+      REDMINE_DB_POSTGRES: postgres
+      REDMINE_DB_USERNAME: redmine_user
+      REDMINE_DB_PASSWORD: your_secure_password
+      REDMINE_DB_DATABASE: redmine_db
+      REDMINE_DB_ENCODING: utf8
+      REDMINE_SECRET_KEY_BASE: supersecretkey
+    volumes:
+      - redmine_data:/usr/src/redmine/files
+      - redmine_plugins:/usr/src/redmine/plugins
+      - redmine_themes:/usr/src/redmine/public/themes
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:15
+    container_name: redmine_db
+    restart: always
+    environment:
+      POSTGRES_USER: redmine_user
+      POSTGRES_PASSWORD: your_secure_password
+      POSTGRES_DB: redmine_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  redmine_data:
+    name: redmine_data
+    driver: local
+  redmine_plugins:
+    name: redmine_plugins
+    driver: local
+  redmine_themes:
+    name: redmine_themes
+    driver: local
+  postgres_data:
+    name: postgres_data
+    driver: local
